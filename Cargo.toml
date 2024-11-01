@@ -1,0 +1,13 @@
+[package]
+name = "music_bot"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+reqwest = "0.11"
+serenity = { features = ["builder", "cache", "voice", "http", "rustls_backend"], version = "0.12" }
+songbird = { features = ["builtin-queue"], version = "0.4.1" }
+symphonia = { features = ["aac", "mp3", "isomp4", "alac"], version = "0.5.2" }
+tokio = {version = "1.38.0", features = ["macros", "rt-multi-thread"] }
