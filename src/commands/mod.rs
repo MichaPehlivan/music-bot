@@ -288,7 +288,7 @@ pub async fn pause(ctx: &Context, msg: &Message) -> CommandResult {
             msg.channel_id.send_message(&ctx.http, CreateMessage::new().embed(embed)).await?;
         }
         else {
-            msg.reply(&ctx.http, "Song already finished!").await?;
+            msg.reply(&ctx.http, "No song playing!").await?;
         }
     }
     else {
@@ -312,7 +312,7 @@ pub async fn unpause(ctx: &Context, msg: &Message) -> CommandResult {
             msg.channel_id.send_message(&ctx.http, CreateMessage::new().embed(embed)).await?;
         }
         else {
-            msg.reply(&ctx.http, "Song already finished!").await?;
+            msg.reply(&ctx.http, "No song playing!").await?;
         }
     }
     else {
