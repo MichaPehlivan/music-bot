@@ -164,6 +164,7 @@ impl EventHandler for TrackEnd {
                 .thumbnail(next_track.image.clone());
             
             self.channel_id.send_message(&self.ctx.http, CreateMessage::new().embed(embed)).await.unwrap();
+            data.insert::<TrackKey>(song.clone());
         }
         else {
             queue.queue.clear();
@@ -205,6 +206,7 @@ pub async fn skip(ctx: &Context, msg: &Message) -> CommandResult {
                 manager,
                 ctx: ctx.clone(),
             }).unwrap();
+            data.insert::<TrackKey>(song.clone());
         }
         else {
             queue.queue.clear();
