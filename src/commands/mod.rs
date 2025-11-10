@@ -276,32 +276,48 @@ pub async fn remove(ctx: &Context, msg: &Message) -> CommandResult {
 //pause
 pub async fn pause(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.write().await;
-    let current_song = data.get::<TrackKey>().unwrap();
-    current_song.pause().unwrap();
-    let queue = data.get::<Queue>().unwrap();
-    let track = queue.get_current().await;
-    let embed = CreateEmbed::new()
-        .title("Paused")
-        .colour(Colour::DARK_GREEN)
-        .timestamp(Timestamp::now())
-        .field("", track.title.clone(), false);
-    msg.channel_id.send_message(&ctx.http, CreateMessage::new().embed(embed)).await?;
+    if let Some(current_song) = data.get::<TrackKey>() {
+        if let Ok(_) = current_song.pause() {
+            let queue = data.get::<Queue>().unwrap();
+            let track = queue.get_current().await;
+            let embed = CreateEmbed::new()
+                .title("Paused")
+                .colour(Colour::DARK_GREEN)
+                .timestamp(Timestamp::now())
+                .field("", track.title.clone(), false);
+            msg.channel_id.send_message(&ctx.http, CreateMessage::new().embed(embed)).await?;
+        }
+        else {
+            msg.reply(&ctx.http, "Song already finished!").await?;
+        }
+    }
+    else {
+        msg.reply(&ctx.http, "No song playing!").await?;
+    }
     Ok(())
 }
 
 //unpause
 pub async fn unpause(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;
-    let current_song = data.get::<TrackKey>().unwrap();
-    current_song.play().unwrap();
-    let queue = data.get::<Queue>().unwrap();
-    let track = queue.get_current().await;
-    let embed = CreateEmbed::new()
-        .title("Unpaused")
-        .colour(Colour::DARK_GREEN)
-        .timestamp(Timestamp::now())
-        .field("", track.title.clone(), false);
-    msg.channel_id.send_message(&ctx.http, CreateMessage::new().embed(embed)).await?;
+    if let Some(current_song) = data.get::<TrackKey>() {
+        if let Ok(_) = current_song.play() {
+            let queue = data.get::<Queue>().unwrap();
+            let track = queue.get_current().await;
+            let embed = CreateEmbed::new()
+                .title("Unpaused")
+                .colour(Colour::DARK_GREEN)
+                .timestamp(Timestamp::now())
+                .field("", track.title.clone(), false);
+            msg.channel_id.send_message(&ctx.http, CreateMessage::new().embed(embed)).await?;
+        }
+        else {
+            msg.reply(&ctx.http, "Song already finished!").await?;
+        }
+    }
+    else {
+        msg.reply(&ctx.http, "No song playing!").await?;
+    }
     Ok(())
 }
 
