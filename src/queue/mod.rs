@@ -49,6 +49,10 @@ impl Queue {
         self.queue.push(track);
     }
 
+    pub async fn get_current(&self) -> &Track {
+        self.queue.get(0).unwrap()
+    }
+
     pub async fn get_next(&mut self) -> &Track {
         self.queue.remove(0);
         self.queue.get(0).unwrap()

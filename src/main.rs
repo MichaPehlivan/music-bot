@@ -37,6 +37,8 @@ async fn message(&self, ctx: Context, msg: Message) {
             "!skip" => commands::skip(&ctx, &msg).await.unwrap(),
             "!queue" => commands::queue(&ctx, &msg).await.unwrap(),
             "!help" => commands::help(&ctx, &msg).await.unwrap(),
+            "!pause" => commands::pause(&ctx, &msg).await.unwrap(),
+            "!unpause" => commands::unpause(&ctx, &msg).await.unwrap(),
             s if s.starts_with("!play") => commands::play(&ctx, &msg).await.unwrap(),
             s if s.starts_with("!remove") => commands::remove(&ctx, &msg).await.unwrap(),
             _=> ()

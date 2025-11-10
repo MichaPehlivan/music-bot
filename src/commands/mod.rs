@@ -272,6 +272,37 @@ pub async fn remove(ctx: &Context, msg: &Message) -> CommandResult {
 }
 
 //pause
+pub async fn pause(ctx: &Context, msg: &Message) -> CommandResult {
+    let data = ctx.data.write().await;
+    let current_song = data.get::<TrackKey>().unwrap();
+    current_song.pause().unwrap();
+    let queue = data.get::<Queue>().unwrap();
+    let track = queue.get_current().await;
+    let embed = CreateEmbed::new()
+        .title("Paused")
+        .colour(Colour::DARK_GREEN)
+        .timestamp(Timestamp::now())
+        .field("", track.title.clone(), false);
+    msg.channel_id.send_message(&ctx.http, CreateMessage::new().embed(embed)).await?;
+    Ok(())
+}
+
+//unpause
+pub async fn unpause(ctx: &Context, msg: &Message) -> CommandResult {
+    let data = ctx.data.read().await;
+    let current_song = data.get::<TrackKey>().unwrap();
+    current_song.play().unwrap();
+    let queue = data.get::<Queue>().unwrap();
+    let track = queue.get_current().await;
+    let embed = CreateEmbed::new()
+        .title("Unpaused")
+        .colour(Colour::DARK_GREEN)
+        .timestamp(Timestamp::now())
+        .field("", track.title.clone(), false);
+    msg.channel_id.send_message(&ctx.http, CreateMessage::new().embed(embed)).await?;
+    Ok(())
+}
+
 //help
 pub async fn help(ctx: &Context, msg: &Message) -> CommandResult {
     let embed = CreateEmbed::new()
@@ -281,7 +312,9 @@ pub async fn help(ctx: &Context, msg: &Message) -> CommandResult {
         .field("!play", "Play/Queue a track from a link or search term", false)
         .field("!skip", "Skip the current track and start the next", false)
         .field("!queue", "View currently queued tracks", false)
-        .field("!remove", "Remove a track from the queue", false);
+        .field("!remove", "Remove a track from the queue", false)
+        .field("!pause", "Pause the current track", false)
+        .field("!unpause", "Unpause the current track", false);
 
     msg.channel_id.send_message(&ctx.http, CreateMessage::new().embed(embed)).await?;
     Ok(())
